@@ -40,8 +40,8 @@ import com.tfg.app.model.User;
 import com.tfg.app.model.Util;
 
 @Service
-@Profile("production")
-public class InitDatabase {
+@Profile("test")
+public class InitDatabaseServiceTest {
     @Autowired
     private UserService users;
     @Autowired
@@ -61,12 +61,12 @@ public class InitDatabase {
     public void init() {
 
         createSuperAdmin(new User());
-        createEntities();
-        createDoctors();
-        createUsers();
-        createAppointmentToUser();
-        createInterventionToAppointment();
-        createDescriptionsAndInterventionsType();
+        // createEntities();
+        // createDoctors();
+        // createUsers();
+        // createAppointmentToUser();
+        // createInterventionToAppointment();
+        // createDescriptionsAndInterventionsType();
 
     }
 
