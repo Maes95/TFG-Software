@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.security.Principal;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import javax.sql.rowset.serial.SerialException;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -66,6 +68,9 @@ public class UserRestController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Environment env;
+
     User currentUser;
 
     @ModelAttribute
@@ -112,10 +117,12 @@ public class UserRestController {
             user.setCodEntity(currentUser.getCodEntity());
 
             userService.save(user);
-            int totalAux = utilService.getNumPatientsTotal() + 1;
-            System.out.println("//////////////////////////////////////" + totalAux);
-            Util utilAux = new Util(0, 0, totalAux);
-            utilService.partialUpdate(23L, utilAux);
+            if (!Arrays.asList(env.getActiveProfiles()).contains("test")) {
+                int totalAux = utilService.getNumPatientsTotal() + 1;
+                System.out.println("//////////////////////////////////////" + totalAux);
+                Util utilAux = new Util(0, 0, totalAux);
+                utilService.partialUpdate(23L, utilAux);
+            }
             URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
 
             return ResponseEntity.created(location).body(user);
@@ -170,7 +177,7 @@ public class UserRestController {
             if (user.getCodEntity() == null || user.getCodEntity().equals("")) {
                 Long generatedCodEntity = userService.generateUniqueCodEntity();
                 user.setCodEntity(generatedCodEntity);
-            } 
+            }
 
             userService.save(user);
             URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();

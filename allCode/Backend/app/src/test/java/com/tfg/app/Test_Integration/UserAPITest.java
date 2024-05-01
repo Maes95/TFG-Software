@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.tfg.app.AppApplication;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(classes = AppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -20,7 +19,7 @@ public class UserAPITest {
 
         // @Autowired
         // protected ObjectMapper objectMapper;
-        
+
         @BeforeEach
         public void setupTest() {
                 RestAssured.useRelaxedHTTPSValidation();

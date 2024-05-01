@@ -21,6 +21,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+
 import java.time.Duration;
 
 @SpringBootTest(classes = AppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -80,57 +82,53 @@ public class LoginEachUserRoleTest {
     driver.findElement(By.cssSelector(".btn")).click();
 
     wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Dar de alta entidad")));
-    // logout();
 
   }
 
-  // @Test
-  // public void loginAdminEntidad() {
-  // // Test name: Log in Admin Entidad
-  // // Step # | name | target | value | comment
-  // // 1 | open | / | |
-  // driver.get("https://smilelink.es/");
-  // // 2 | setWindowSize | 1552x840 | |
-  // driver.manage().window().maximize();
-  // // 3 | click | css=.form-group:nth-child(1) > .form-control | |
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control")).click();
-  // // 4 | type | css=.form-group:nth-child(1) > .form-control |
-  // // admin100@smilelink.com |
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control")).sendKeys("admin100@smilelink.es");
-  // // 5 | type | css=.pass-input | 12345 |
-  // driver.findElement(By.cssSelector(".pass-input")).sendKeys("12345");
-  // // 6 | click | css=.btn | |
-  // driver.findElement(By.cssSelector(".btn")).click();
-  // logout();
-  // }
+  @Test
+  public void loginAdminEntidad() {
+    driver.get("https://localhost:" + this.port + "/");
+    driver.manage().window().maximize();
+    wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".form-group:nth-child(1) > .form-control")));
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).click();
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).sendKeys("admin100@smilelink.es");
+    driver.findElement(By.cssSelector(".pass-input")).sendKeys("12345");
+    driver.findElement(By.cssSelector(".btn")).click();
 
-  // @Test
-  // public void loginDoctor() {
-  // driver.get("https://smilelink.es/");
-  // driver.manage().window().maximize();
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control")).click();
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control"))
-  // .sendKeys("jaime.flores@smilelink.es");
-  // driver.findElement(By.cssSelector(".pass-input")).sendKeys("pass");
-  // driver.findElement(By.cssSelector(".pass-input")).sendKeys(Keys.ENTER);
-  // logout();
-  // }
+    // ASSERT TO CHECK
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+        "//ul[@class='nav user-menu float-end']//li[@class='nav-item dropdown has-arrow user-profile-list']//div[@class='user-names']//span[text()='Doctor']")));
 
-  // @Test
-  // public void loginPatient() {
-  // driver.get("https://smilelink.es/");
-  // driver.manage().window().maximize();
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control")).click();
-  // driver.findElement(By.cssSelector(".form-group:nth-child(1) >
-  // .form-control"))
-  // .sendKeys("sercua.flores@gmail.com");
-  // driver.findElement(By.cssSelector(".pass-input")).sendKeys("pass");
-  // driver.findElement(By.cssSelector(".pass-input")).sendKeys(Keys.ENTER);
-  // logout();
-  // }
+  }
+
+  @Test
+  public void loginDoctor() {
+    driver.get("https://localhost:" + this.port + "/");
+    driver.manage().window().maximize();
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).click();
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control"))
+        .sendKeys("jaime.flores@smilelink.es");
+    driver.findElement(By.cssSelector(".pass-input")).sendKeys("pass");
+    driver.findElement(By.cssSelector(".pass-input")).sendKeys(Keys.ENTER);
+
+    // ASSERT TO CHECK
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+        "//ul[@class='nav user-menu float-end']//li[@class='nav-item dropdown has-arrow user-profile-list']//div[@class='user-names']//span[text()='Doctor']")));
+
+  }
+
+  @Test
+  public void loginPatient() {
+    driver.get("https://localhost:" + this.port + "/");
+    driver.manage().window().maximize();
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).click();
+    driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control"))
+        .sendKeys("sercua.flores@gmail.com");
+    driver.findElement(By.cssSelector(".pass-input")).sendKeys("pass");
+    driver.findElement(By.cssSelector(".pass-input")).sendKeys(Keys.ENTER);
+
+    // ASSERT TO CHECK
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath(
+        "//ul[@class='nav user-menu float-end']//li[@class='nav-item dropdown has-arrow user-profile-list']//div[@class='user-names']//span[text()='Paciente']")));
+  }
 }
