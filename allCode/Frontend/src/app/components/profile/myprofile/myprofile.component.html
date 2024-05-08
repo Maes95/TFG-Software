@@ -21,12 +21,15 @@
                 <div class="col-md-12">
                     <div *ngIf="!isAdmin && !authService.isDoctor()" class="profile-view">
                         <div class="profile-img-wrap">
-                            <div class="profile-img">
+                            <div class="profile-img" *ngIf="!(authService.isAdmin() || authService.isSuperAdmin() || authService.isDoctor())">
                                 <a href="javascript:void(0);"><img class="avatar" [src]="profileAvatarUrls" alt=""></a>
                             </div>
                         </div>
                         <div class="profile-basic">
                             <div class="row">
+                                <div class="profile-img" *ngIf="(authService.isAdmin() || authService.isSuperAdmin() || authService.isDoctor())">
+                                    <a href="javascript:void(0);"><img class="avatar" [src]="profileAvatarUrls" alt=""></a>
+                                </div>
                                 <div class="col-md-5">
                                     <div class="profile-info-left">
                                         <h3 class="user-name m-t-0 mb-0">{{user.name}}
@@ -34,7 +37,7 @@
                                         <div>DNI: {{user.username}}</div>
                                     </div>
                                 </div>
-                                <div class="col-md-7">
+                                <div class="col-md-7" *ngIf="!authService.isSuperAdmin()">
                                     <ul class="personal-info">
                                         <li>
                                             <span class="title">Teléfono:</span>
@@ -98,7 +101,7 @@
                 </div>
             </div>
         </div>
-        <div class="profile-tabs">
+        <div class="profile-tabs" *ngIf="!(authService.isAdmin() || authService.isSuperAdmin() || authService.isDoctor())">
             <ul class="nav nav-tabs nav-tabs-bottom">
                 <li class="nav-item"><a class="nav-link active" href="#historyIntervention"
                         data-bs-toggle="tab">Historial
@@ -219,8 +222,8 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-success" style="position: fixed; bottom: 20px; right: 20px" (click)="exportPDF()">
-        Descargar intervenciones</button>
+    <!-- <button class="btn btn-success" style="position: fixed; bottom: 20px; right: 20px" (click)="exportPDF()">
+        Descargar intervenciones</button> -->
 </div>
 
 <!-- <a href="https://www.flaticon.es/iconos-gratis/garrapata" title="garrapata iconos">Garrapata iconos creados por Octopocto - Flaticon</a> -->

@@ -14,7 +14,7 @@
             </div>
             <!-- /Page Header -->
 
-            <div class="good-morning-blk">
+            <div class="good-morning-blk" *ngIf="!authService.isSuperAdmin()">
                 <div class="row">
                     <div class="col-md-6">
                         <div *ngIf="authService.isAdmin() || authService.isDoctor()" class="morning-user">
@@ -42,8 +42,17 @@
                     </div>
                 </div>
             </div>
+            <div class="row" *ngIf="authService.isSuperAdmin()">
+                <div class="col-12 col-xl-12 col-xs-12">
+                    <a type="button" class="btn btn-block btn-atractivo"
+                        routerLink="/register-doctor">Dar de alta entidad </a>
+                        <br><br>
+                </div>
+            </div>
 
-            <div class="doctor-list-blk" *ngIf="authService.isAdmin() || authService.isDoctor()">
+
+            <div class="doctor-list-blk"
+                *ngIf="(authService.isAdmin() || authService.isDoctor()) && !authService.isSuperAdmin()">
                 <div class="row">
                     <div class="col-xl-4 col-md-6">
                         <div class="doctor-widget border-right-bg">
@@ -55,8 +64,10 @@
                                         class="counter-up">{{numAppointmentsNoCompleted}}</span><span>/{{totalAppointmentsToday}}</span>
                                     <span *ngIf="numAppointmentsNoCompleted <= 4 && numAppointmentsNoCompleted != 0"
                                         class="status-green">¡SIGUE ASÍ, NO QUEDA NADA!</span>
-                                    <span *ngIf="numAppointmentsNoCompleted > 4" class="status-pink">¡A POR ELLO!</span>
-                                    <span *ngIf="numAppointmentsNoCompleted == 0" class="status-green">TERMINAMOS POR
+                                    <span *ngIf="numAppointmentsNoCompleted > 4" class="status-pink">¡A POR
+                                        ELLO!</span>
+                                    <span *ngIf="numAppointmentsNoCompleted == 0" class="status-green">TERMINAMOS
+                                        POR
                                         HOY</span>
                                 </h4>
                                 <h5>Citas pendientes para hoy</h5>
@@ -95,9 +106,8 @@
             <div *ngIf="authService.isAdmin() || authService.isDoctor()">
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-6 col-xl-2 d-flex">
-
                         <div class="struct-point">
-                            <div class="card wallet-widget">
+                            <div class="card wallet-widget" *ngIf="!authService.isSuperAdmin()">
                                 <div class="circle-bar circle-bar2">
                                     <div class="circle-graph2" data-percent="66">
                                         <b><img src="assets/img/icons/timer.svg" alt=""></b>
@@ -108,27 +118,23 @@
                                     <h4>{{nextAppointment}}</h4>
                                 </div>
                             </div>
-                            <div class="card patient-structure">
-                                <div class="card-body">
-                                    <h5>Nuevos pacientes</h5>
-                                    <h3>{{newPatients}}<span class="status-green"><img
-                                                src="assets/img/icons/sort-icon-01.svg" alt=""
-                                                class="me-1">{{incrementRate}}%</span></h3>
-                                </div>
-                            </div>
-                            <div class="card patient-structure">
-                                <div class="card-body">
-                                    <h5>Pacientes</h5>
-                                    <h3>{{numPatientsTotal}}<span class="status-pink"><img
-                                                src="assets/img/icons/sort-icon-02.svg" alt="" class="me-1">-20%</span>
-                                    </h3>
-                                </div>
-                            </div>
-
                         </div>
-
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6 col-xl-10 d-flex">
+                    <div class="card patient-structure" *ngIf="authService.isSuperAdmin()">
+                        <div class="card-body">
+                            <h5>Nuevos pacientes</h5>
+                            <h3>{{newPatients}}<span class="status-green"><img src="assets/img/icons/sort-icon-01.svg"
+                                        alt="" class="me-1">{{incrementRate}}%</span></h3>
+                        </div>
+                    </div>
+                    <div class="card patient-structure" *ngIf="authService.isSuperAdmin()">
+                        <div class="card-body">
+                            <h5>Pacientes</h5>
+                            <h3>{{numPatientsTotal}}
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-6 col-xl-10 d-flex" *ngIf="!authService.isSuperAdmin()">
                         <div class="card flex-fill comman-shadow">
                             <div class="card-header">
                                 <h4 class="card-title d-inline-block">Próximas citas</h4> <a
@@ -170,9 +176,11 @@
                                                                 <ul class="doctor-sub-list dropdown-menu">
                                                                     <!-- Contenido del dropdown aquí -->
                                                                     <li class="dropdown-item">
-                                                                        Hora<span>{{appointment.fromDate | slice:0:5}} -
+                                                                        Hora<span>{{appointment.fromDate |
+                                                                            slice:0:5}} -
                                                                             {{appointment.toDate | slice:0:5}}
-                                                                            ({{timeOn(appointment)}}min) </span></li>
+                                                                            ({{timeOn(appointment)}}min) </span>
+                                                                    </li>
                                                                     <li class="dropdown-item">
                                                                         Motivo<span>{{appointment.description}}</span>
                                                                     </li>
@@ -273,7 +281,8 @@
                                         <span><strong>Fecha: </strong></span>{{appointment.bookDate | date:
                                         "dd/MM/YYYY"}}<br>
                                         <span><strong>Hora: </strong></span>{{appointment.fromDate | slice:0:5}}<br>
-                                        <span><strong>Nota adicional: </strong></span>{{appointment.additionalNote}}<br>
+                                        <span><strong>Nota adicional:
+                                            </strong></span>{{appointment.additionalNote}}<br>
                                         <span><strong>Realizada: </strong></span><span
                                             *ngIf="appointment.completed">Sí</span><span
                                             *ngIf="!appointment.completed">No</span>

@@ -30,15 +30,15 @@ public class UtilService {
     }
 
     public int getNumPatientsYesterday() {
-        return utilRepository.getNumPatientsYesterday();
+        return utilRepository.findNumPatientsYesterdayById(23L);
     }
 
     public int getNumPatientsTotal() {
-        return utilRepository.getNumPatientsTotal();
+        return utilRepository.findNumPatientsTotalById(23L);
     }
 
     public Util partialUpdate(Long id, Util utilupd) {
-        Util util = findById(3L).get();
+        Util util = findById(23L).get();
         if (utilupd.getAppointmentsCompletedYesterday() != 0){
             util.setAppointmentsCompletedYesterday(utilupd.getAppointmentsCompletedYesterday());
         }

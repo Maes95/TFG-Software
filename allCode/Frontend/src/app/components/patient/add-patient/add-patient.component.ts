@@ -61,8 +61,6 @@ export class AddPatientComponent implements OnInit {
           (_) => {
             Swal.fire("Usuario registrado", "", "success");
             try {
-              console.log("EMAIL:", this.email)
-              console.log("DNI:", this.username)
               this.emailService.sendEmail(this.email, this.username);
             } catch (error) {
               console.log(error)
@@ -71,9 +69,10 @@ export class AddPatientComponent implements OnInit {
             }
             window.history.back();
           },
-          (error) => {
+          (_) => {
             Swal.fire("Probablemente este usuario ya exista, sino vuelva a intentarlo", "", "error");
-            console.log(error)
+            console.log(_)
+            console.error("Error detail:", _.error);
             console.error("error");
             this.router.navigate(['/error-page'])
           }

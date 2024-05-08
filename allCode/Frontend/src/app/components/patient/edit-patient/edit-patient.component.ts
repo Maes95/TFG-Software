@@ -69,7 +69,7 @@ export class EditPatientComponent {
       title: "¿Estas seguro/a que quieres confirmar los cambios?",
       showDenyButton: true,
       showCancelButton: false,
-      confirmButtonText: "Eliminar",
+      confirmButtonText: "Actualizar",
       denyButtonText: `Cancelar`
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
