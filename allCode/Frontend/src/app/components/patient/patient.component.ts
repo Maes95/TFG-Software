@@ -118,7 +118,7 @@ export class PatientComponent implements OnInit {
   }
 
   exportPDF() {
-    this.utilService.exportPatientsPDF().subscribe((data) => {
+    this.utilService.exportPatientsPDF(this.doctorAsignated).subscribe((data) => {
       const blob = new Blob([data], { type: 'application/pdf' });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
@@ -128,7 +128,7 @@ export class PatientComponent implements OnInit {
   }
 
   exportExcel() {
-    this.utilService.exportPatientsExcel().subscribe((data) => {
+    this.utilService.exportPatientsExcel(this.doctorAsignated).subscribe((data) => {
       const blob = new Blob([data], { type: 'application/octet-stream' });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);

@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import javax.annotation.PostConstruct;
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -36,10 +34,6 @@ public class InitDatabaseServiceTest {
     @Autowired
     private AppointmentService appointments;
     @Autowired
-    private InterventionService interventions;
-    @Autowired
-    private DocumentService documents;
-    @Autowired
     private UtilService utilService;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -54,7 +48,6 @@ public class InitDatabaseServiceTest {
         createDoctors();
         createUsers();
         createAppointmentToUser();
-        // createInterventionToAppointment();
         createDescriptionsAndInterventionsType();
 
     }

@@ -14,8 +14,8 @@ export class UtilService {
   constructor(private httpClient: HttpClient) { }
 
 
-  exportPatientsPDF(): Observable<Blob> {
-    return this.httpClient.get(baseUrl + 'exportPatientsPDF', { responseType: 'blob' });
+  exportPatientsPDF(doctorAsignated: number): Observable<Blob> {
+    return this.httpClient.get(baseUrl + 'exportPatientsPDF/' + doctorAsignated, { responseType: 'blob' });
   }
 
   exportAppointmentsPDF(): Observable<Blob> {
@@ -25,8 +25,8 @@ export class UtilService {
     return this.httpClient.get(baseUrl + 'exportInterventionsPDF/' + id, { responseType: 'blob' });
   }
 
-  exportPatientsExcel(): Observable<Blob> {
-    return this.httpClient.get(baseUrl + 'exportPatientsExcel', { responseType: 'blob' });
+  exportPatientsExcel(doctorAsignated: number): Observable<Blob> {
+    return this.httpClient.get(baseUrl + 'exportPatientsExcel/' + doctorAsignated, { responseType: 'blob' });
   }
 
   getAppointmentsCompletedYesterday(): Observable<number> {

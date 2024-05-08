@@ -58,8 +58,8 @@ public class UtilRestController {
     @Autowired
     private UtilService utilService;
 
-    @GetMapping("/exportPatientsPDF")
-    public void exportPatientListPDF(HttpServletResponse response) throws DocumentException, IOException {
+    @GetMapping("/exportPatientsPDF/{id}")
+    public void exportPatientListPDF(HttpServletResponse response, @PathVariable Long id) throws DocumentException, IOException {
         response.setContentType("application/pdf");
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
@@ -70,13 +70,16 @@ public class UtilRestController {
 
         response.setHeader(header, value);
 
-        List<User> patients = userService.findAll();
-
-        ExporterPDF exporter = new ExporterPDF();
-        exporter.setPatientList(patients);
-        exporter.exportPatients(response);
-
+        try{
+            List<User> patients = userService.findAllUsersByDoctorAsignatedId(id);
+            ExporterPDF exporter = new ExporterPDF();
+            exporter.setPatientList(patients);
+            exporter.exportPatients(response);
+        } catch (Exception e) {
+            e.printStackTrace();;
+        }
     }
+  
 
     @GetMapping("/exportAppointmentsPDF")
     public void exportAppointmentListPDF(HttpServletResponse repsonse) throws DocumentException, IOException {
@@ -121,9 +124,9 @@ public class UtilRestController {
 
     /////////////////////////////////////////////////////////////
 
-    @GetMapping("/exportPatientsExcel")
-    public void exportPatientListExcel(HttpServletResponse response) throws DocumentException, IOException {
-        response.setContentType("application/octet-stream");
+    @GetMapping("/exportPatientsExcel/{id}")
+    public void exportPatientListExcel(HttpServletResponse response, @PathVariable Long id) throws DocumentException, IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormat.format(new Date());
@@ -133,7 +136,7 @@ public class UtilRestController {
 
         response.setHeader(header, value);
 
-        List<User> patients = userService.findAll();
+        List<User> patients = userService.findAllUsersByDoctorAsignatedId(id);
 
         ExporterExcel exporter = new ExporterExcel(patients);
 
@@ -197,10 +200,10 @@ public class UtilRestController {
             document.add(new Paragraph("Paciente: " + report.getName() + " " + report.getLastName()));
             document.add(new Paragraph("DNI: " + report.getDni()));
             document.add(new Paragraph("Dirección: " + report.getAddress()));
-            document.add(new Paragraph("Teléfono: "+ report.getPhone()));
-            document.add(new Paragraph("Fecha: "+ LocalDate.now().toString()));
+            document.add(new Paragraph("Teléfono: " + report.getPhone()));
+            document.add(new Paragraph("Fecha: " + LocalDate.now().toString()));
             document.add(new Paragraph(""));
-            document.add(new Paragraph("Motivo de la cita: "+ report.getDescriptionAppointment()));
+            document.add(new Paragraph("Motivo de la cita: " + report.getDescriptionAppointment()));
             document.add(new Paragraph(""));
             document.add(new Paragraph("Conclusiones médicas:"));
             document.add(new Paragraph(report.getReportIntervention()));
