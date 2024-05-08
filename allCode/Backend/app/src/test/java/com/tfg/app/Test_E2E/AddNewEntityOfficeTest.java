@@ -58,13 +58,11 @@ public class AddNewEntityOfficeTest {
     }
 
     void logout() {
-        // Esperar y hacer clic en el elemento que despliega el menú
         WebElement menuToggle = wait
                 .until(ExpectedConditions
                         .elementToBeClickable(By.xpath("//a[@class='dropdown-toggle nav-link user-link']")));
         menuToggle.click();
 
-        // Hacer clic en "Cerrar sesión"
         WebElement logoutLink = wait
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), 'Cerrar sesión')]")));
         logoutLink.click();

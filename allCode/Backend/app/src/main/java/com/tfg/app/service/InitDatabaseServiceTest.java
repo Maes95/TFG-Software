@@ -7,7 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Blob;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import javax.annotation.PostConstruct;
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -19,6 +23,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tfg.app.model.Appointment;
+import com.tfg.app.model.Description;
 import com.tfg.app.model.User;
 import com.tfg.app.model.Util;
 
@@ -47,9 +53,9 @@ public class InitDatabaseServiceTest {
         createEntities();
         createDoctors();
         createUsers();
-        // createAppointmentToUser();
+        createAppointmentToUser();
         // createInterventionToAppointment();
-        // createDescriptionsAndInterventionsType();
+        createDescriptionsAndInterventionsType();
 
     }
 
@@ -195,5 +201,75 @@ public class InitDatabaseServiceTest {
         }
 
         users.save(user);
+    }
+
+    private void createAppointmentToUser() {
+        User patient = users.findByEmail("sercua.flores@gmail.com").orElseThrow();
+
+        Appointment appointment = new Appointment();
+        appointment.setUser(patient);
+        appointment.setBookDate(LocalDate.parse("2024-07-25"));
+        LocalTime fromDate = LocalTime.parse("11:45");
+        appointment.setFromDate(fromDate);
+        appointment.setToDate(fromDate.plusMinutes(20));
+        appointment.setCompleted(false);
+        appointment.setCodEntity(200L);
+        appointment.setDoctorAsignated(users.findByEmail("jaime.flores@smilelink.es").orElseThrow());
+        appointment.setDescription("Mantenimiento y Prevención");
+        appointments.save(appointment);
+
+    }
+
+    private void createDescriptionsAndInterventionsType() {
+        List<String> descriptionList = List.of("Mantenimiento y Prevención",
+                "Problemas Comunes y Tratamientos de Rutina", "Ortodoncia y Estética Dental",
+                "Procedimientos Quirúrgicos y Restauradores", "Problemas Específicos y Emergencias");
+
+        List<Map<String, String>> interventionTypeList = List.of(
+                Map.of(
+                        "Chequeos y limpiezas regulares", "30",
+                        "Consulta sobre hábitos orales", "15",
+                        "Prevención de enfermedades dentales y educación sobre higiene oral", "15"),
+                Map.of(
+                        "Dolor de muelas", "5",
+                        "Dolor de encías", "90",
+                        "Obturación simple", "20",
+                        "Obturacion compuesta", "30",
+                        "Gran reconstrucción", "60",
+                        "Problemas de encías", "45"),
+                Map.of(
+                        "Tratamientos de ortodoncia", "30",
+                        "Blanqueamiento dental", "45",
+                        "Mejoras estéticas", "90"),
+                Map.of(
+                        "Extracciones dentales", "60",
+                        "Implantes y prótesis dentales", "60"),
+                Map.of(
+                        "Emergencias dentales", "45",
+                        "Trastorno de la articulacion temporomandibular", "45",
+                        "Revisión muelas de juicio", "15",
+                        "Problemas de mordida o habla", "15"));
+
+        for (int i = 0; i < descriptionList.size(); i++) {
+            for (Map.Entry<String, String> entry : interventionTypeList.get(i).entrySet()) {
+                Description description = new Description();
+                description.setNameIntervention(entry.getKey());
+                description.setNameDescription(descriptionList.get(i));
+                LocalTime duration = convertDurationToLocalTime(entry.getValue());
+                description.setTimeToIntervention(duration);
+                descriptionService.save(description);
+            }
+        }
+    }
+
+    private LocalTime convertDurationToLocalTime(String duration) {
+        try {
+            int totalMinutes = Integer.parseInt(duration.replaceAll("[^0-9]", ""));
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+            return LocalTime.of(hours, minutes);
+        } catch (NumberFormatException e) {
+            return LocalTime.of(0, 0);
+        }
     }
 }

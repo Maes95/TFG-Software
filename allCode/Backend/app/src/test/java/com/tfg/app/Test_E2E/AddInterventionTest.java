@@ -1,86 +1,108 @@
-// package com.tfg.app.Test_E2E;
+package com.tfg.app.Test_E2E;
 
-// import org.junit.jupiter.api.AfterAll;
-// import org.junit.jupiter.api.BeforeAll;
-// import org.openqa.selenium.By;
-// import org.openqa.selenium.JavascriptExecutor;
-// import org.openqa.selenium.WebDriver;
-// import org.openqa.selenium.WebElement;
-// import org.openqa.selenium.chrome.ChromeDriver;
-// import org.openqa.selenium.chrome.ChromeOptions;
-// import org.openqa.selenium.support.ui.ExpectedConditions;
-// import org.openqa.selenium.support.ui.WebDriverWait;
-// import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 
-// import java.time.Duration;
+import com.tfg.app.AppApplication;
 
-// @SpringBootTest
-// public class AddInterventionTest {
+import io.github.bonigarcia.wdm.WebDriverManager;
 
-//     private WebDriver driver;
-//     JavascriptExecutor js;
-//     private WebDriverWait wait;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 
-//     @BeforeAll
-//     public void setUp() {
-//         // System.setProperty("webdriver.chrome.driver",
-//         //         "C:\\Users\\sercu_zc5bz5j\\Desktop\\chromedriver-win64\\chromedriver.exe");
-//         // ChromeOptions options = new ChromeOptions();
-//         // options.addArguments("--remote-allow-origins=*");
-//         // driver = new ChromeDriver(options);
-//         // js = (JavascriptExecutor) driver;
-//         wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Un único WebDriverWait reutilizable
-//     }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.Duration;
 
-//     @AfterAll
-//     public void tearDown() {
-//         driver.quit();
-//     }
+@SpringBootTest(classes = AppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+public class AddInterventionTest {
 
-//     @org.junit.jupiter.api.Test
-//     public void addAppointmentToPatient() {
-//         driver.get("https://localhost/");
-//         driver.manage().window().maximize();
+    @LocalServerPort
+    int port;
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".form-group:nth-child(1) > .form-control")))
-//                 .sendKeys("jaime.flores@smilelink.es");
+    private static WebDriver driver;
+    JavascriptExecutor js;
+    private WebDriverWait wait;
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".pass-input")))
-//                 .sendKeys("pass");
+    @BeforeAll
+    public static void setUpClass() {
+        WebDriverManager.chromedriver().setup();
+    }
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".btn"))).click();
+    @BeforeEach
+    public void setupTest() {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+        options.setAcceptInsecureCerts(true);
+        // options.addArguments("--headless");
+        driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10)); // Un único WebDriverWait reutilizable
+        js = (JavascriptExecutor) driver;
 
-//         wait.until(ExpectedConditions
-//                 .visibilityOfElementLocated(By.cssSelector(".sidebar > .sidebarNew:nth-child(4) > #dropdownBasic1")))
-//                 .click();
+    }
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Lista de citas"))).click();
-//         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Sergio"))).click();
-//         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Añadir intervención"))).click();
-//         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Mantenimiento y Prevención"))).click();
-//         wait.until(ExpectedConditions.elementToBeClickable(By.name("type"))).click();
-//         driver.findElement(By.name("type")).sendKeys("Realizada una limpieza");
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 
-//         js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+    void login(String email, String pass) {
+        driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).click();
+        driver.findElement(By.cssSelector(".form-group:nth-child(1) > .form-control")).sendKeys(email);
+        driver.findElement(By.cssSelector(".pass-input")).sendKeys(pass);
+        driver.findElement(By.cssSelector(".pass-input")).sendKeys(Keys.ENTER);
+    }
 
-//         wait.until(ExpectedConditions
-//                 .visibilityOfElementLocated(By.cssSelector(".btn-outline-success")))
-//                 .click();
+    @Test
+    public void addInterventionToPatient() {
+        driver.get("https://localhost:" + this.port + "/");
+        driver.manage().window().maximize();
 
-//         WebElement element = driver.findElement(By.cssSelector(".btn:nth-child(2)"));
-//         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+        login("jaime.flores@smilelink.es", "pass");
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By
+                        .cssSelector(".sidebar > .sidebarNew:nth-child(4) > #dropdownBasic1")))
+                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Lista de citas"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Mostrar todos los pacientes"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Sergio"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Añadir intervención"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Mantenimiento y Prevención"))).click();
 
-//         wait.until(ExpectedConditions
-//                 .visibilityOfElementLocated(By.cssSelector(".sidebar > .sidebarNew:nth-child(4) > #dropdownBasic1")))
-//                 .click();
+        driver.findElement(By.name("type")).sendKeys("Texto para informe de intervención");
+        
+        WebElement element = driver.findElement(By.cssSelector(".btn.btn-primary.submit-form.me-2"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Lista de citas"))).click();
-//         wait.until(ExpectedConditions
-//                 .visibilityOfElementLocated(By.cssSelector("tr:nth-child(1) > td .form-check-input"))).click();
+        // TO CHECK OK
 
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
-//         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
-//     }
-// }
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By
+                        .cssSelector(".sidebar > .sidebarNew:nth-child(3) > #dropdownBasic1")))
+                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Lista de pacientes"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Mostrar todos los pacientes"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Sergio"))).click();
+        WebElement checkIntervention =  wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Mantenimiento y Prevención")));
+
+        String toCheck = "Mantenimiento y Prevención";
+        assertEquals(toCheck, checkIntervention.getText());
+    }
+
+}

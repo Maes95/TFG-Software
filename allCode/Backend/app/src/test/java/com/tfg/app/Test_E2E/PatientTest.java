@@ -61,13 +61,11 @@ public class PatientTest {
     }
 
     void logout() {
-        // Esperar y hacer clic en el elemento que despliega el menú
         WebElement menuToggle = wait
                 .until(ExpectedConditions
                         .elementToBeClickable(By.xpath("//a[@class='dropdown-toggle nav-link user-link']")));
         menuToggle.click();
 
-        // Hacer clic en "Cerrar sesión"
         WebElement logoutLink = wait
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), 'Cerrar sesión')]")));
         logoutLink.click();
@@ -110,7 +108,7 @@ public class PatientTest {
     }
 
     @Test
-    public void editPatient() {
+    public void editPatient() throws InterruptedException {
         driver.get("https://localhost:" + this.port + "/");
         driver.manage().window().maximize();
         login("jaime.flores@smilelink.es", "pass");
@@ -132,6 +130,7 @@ public class PatientTest {
 
         WebElement saveButton = driver.findElement(By.cssSelector("button.btn.btn-primary.submit-btn"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", saveButton);
+
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button.swal2-confirm"))).click();
 
@@ -142,7 +141,7 @@ public class PatientTest {
     }
 
     @Test
-    public void editMyself() {
+    public void editMyself() throws InterruptedException {
         driver.get("https://localhost:" + this.port + "/");
         driver.manage().window().maximize();
         login("sercua.flores@gmail.com", "pass");
