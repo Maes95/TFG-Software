@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.tfg.app.model.Appointment;
 import com.tfg.app.model.Description;
+import com.tfg.app.model.Intervention;
 import com.tfg.app.model.User;
 import com.tfg.app.model.Util;
 
@@ -33,6 +34,8 @@ public class InitDatabaseServiceTest {
     private UserService users;
     @Autowired
     private AppointmentService appointments;
+    @Autowired
+    private InterventionService interventions;
     @Autowired
     private UtilService utilService;
     @Autowired
@@ -49,7 +52,21 @@ public class InitDatabaseServiceTest {
         createUsers();
         createAppointmentToUser();
         createDescriptionsAndInterventionsType();
+        createInterventionToAppointment();
+        
+        
+    }
 
+    private void createInterventionToAppointment() {
+
+        // ID appointment: 8 (Sin documento)
+        Intervention intervention = new Intervention();
+        Appointment appointment = appointments.findById(8L).orElseThrow();
+        intervention.setAppointment(appointment);
+        intervention.setInterventionDate(LocalDate.now());
+        intervention.setUser(users.findById(6L).orElseThrow());
+        intervention.setType(appointment.getDescription());
+        interventions.save(intervention);
     }
 
     private void createUsers() {
