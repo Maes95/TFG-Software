@@ -28,11 +28,6 @@ public class ExporterPDF {
     private List<Appointment> appointmentList;
     private List<Intervention> interventionList;
 
-    // public ExporterPDF(List<User> patientList) {
-    // super();
-    // this.patientList = patientList;
-    // }
-
     public ExporterPDF() {
     }
 
